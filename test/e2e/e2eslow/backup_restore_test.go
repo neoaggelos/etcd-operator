@@ -34,8 +34,7 @@ import (
 	"github.com/coreos/etcd-operator/pkg/util/retryutil"
 	"github.com/coreos/etcd-operator/test/e2e/e2eutil"
 	"github.com/coreos/etcd-operator/test/e2e/framework"
-
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -100,7 +99,7 @@ func verifyAWSEnvVars() error {
 }
 
 func getEndpoints(kubeClient kubernetes.Interface, secureClient bool, namespace, clusterName string) ([]string, error) {
-	podList, err := kubeClient.Core().Pods(namespace).List(k8sutil.ClusterListOpt(clusterName))
+	podList, err := kubeClient.CoreV1().Pods(namespace).List(k8sutil.ClusterListOpt(clusterName))
 	if err != nil {
 		return nil, err
 	}

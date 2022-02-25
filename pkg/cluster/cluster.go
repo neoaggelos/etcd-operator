@@ -31,7 +31,7 @@ import (
 
 	"github.com/pborman/uuid"
 	"github.com/sirupsen/logrus"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -98,7 +98,7 @@ func New(config Config, cl *api.EtcdCluster) *Cluster {
 		eventCh:   make(chan *clusterEvent, 100),
 		stopCh:    make(chan struct{}),
 		status:    *(cl.Status.DeepCopy()),
-		eventsCli: config.KubeCli.Core().Events(cl.Namespace),
+		eventsCli: config.KubeCli.CoreV1().Events(cl.Namespace),
 	}
 
 	go func() {
@@ -388,7 +388,7 @@ func (c *Cluster) createPod(members etcdutil.MemberSet, m *etcdutil.Member, stat
 func (c *Cluster) removePod(name string) error {
 	ns := c.cluster.Namespace
 	opts := metav1.NewDeleteOptions(podTerminationGracePeriod)
-	err := c.config.KubeCli.Core().Pods(ns).Delete(name, opts)
+	err := c.config.KubeCli.CoreV1().Pods(ns).Delete(name, opts)
 	if err != nil {
 		if !k8sutil.IsKubernetesResourceNotFoundError(err) {
 			return err
@@ -398,7 +398,7 @@ func (c *Cluster) removePod(name string) error {
 }
 
 func (c *Cluster) pollPods() (running, pending []*v1.Pod, err error) {
-	podList, err := c.config.KubeCli.Core().Pods(c.cluster.Namespace).List(k8sutil.ClusterListOpt(c.cluster.Name))
+	podList, err := c.config.KubeCli.CoreV1().Pods(c.cluster.Namespace).List(k8sutil.ClusterListOpt(c.cluster.Name))
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to list running pods: %v", err)
 	}
