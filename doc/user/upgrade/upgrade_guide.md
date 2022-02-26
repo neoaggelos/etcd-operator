@@ -1,6 +1,6 @@
 # Upgrade Guide
 
-This document shows how to safely upgrade the operator to a desired version while preserving the cluster's state and data whenever possible. 
+This document shows how to safely upgrade the operator to a desired version while preserving the cluster's state and data whenever possible.
 
 ### Backup safety precaution:
 **Note:** Only applies to when upgrading from an etcd operator with version < v0.7.0.
@@ -92,7 +92,7 @@ Steps for migration:
     storageType: "S3"
     s3:
       s3Bucket: <your-s3-bucket>
-      awsSecret: <aws-secret> 
+      awsSecret: <aws-secret>
   ```
 
 - Apply the cluster backup spec:
@@ -107,21 +107,21 @@ Steps for migration:
     containers:
     - name: etcd-operator
       image: quay.io/coreos/etcd-operator:v0.5.2
-      command: 
+      command:
         - /usr/local/bin/etcd-operator
         - --backup-aws-secret=aws
         - --backup-aws-config=aws
         - --backup-s3-bucket=<your-s3-bucket>
   ```
 
-  to 
+  to
 
   ```yaml
   spec:
     containers:
     - name: etcd-operator
       image: quay.io/coreos/etcd-operator:v0.6.0
-      command: 
+      command:
         - /usr/local/bin/etcd-operator
   ```
 
@@ -148,7 +148,7 @@ Kubernetes cluster version must be 1.7+.
 - Recreate the etcd-operator deployment with the `0.5.0` image.
 - Create a new cluster that restores from the backup of the previous cluster. The new cluster CR spec should look as follows:
 ```
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.coreos.com/v1beta3"
 kind: "EtcdCluster"
 metadata:
   name: <cluster-name>

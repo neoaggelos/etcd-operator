@@ -24,7 +24,7 @@ import (
 	"strings"
 	"time"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/util/etcdutil"
 	"github.com/coreos/etcd-operator/pkg/util/retryutil"
 	"github.com/pborman/uuid"
@@ -380,7 +380,7 @@ func newEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state,
 					TIMEOUT_READY=%d
 					while ( ! nslookup %s )
 					do
-						# If TIMEOUT_READY is 0 we should never time out and exit 
+						# If TIMEOUT_READY is 0 we should never time out and exit
 						TIMEOUT_READY=$(( TIMEOUT_READY-1 ))
                         if [ $TIMEOUT_READY -eq 0 ];
 				        then

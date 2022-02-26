@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package v1beta2
+package v1beta3
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -36,7 +36,7 @@ var (
 	SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
 	AddToScheme   = SchemeBuilder.AddToScheme
 
-	SchemeGroupVersion = schema.GroupVersion{Group: groupName, Version: "v1beta2"}
+	SchemeGroupVersion = schema.GroupVersion{Group: groupName, Version: "v1beta3"}
 	EtcdClusterCRDName = EtcdClusterResourcePlural + "." + groupName
 	EtcdBackupCRDName  = EtcdBackupResourcePlural + "." + groupName
 	EtcdRestoreCRDName = EtcdRestoreResourcePlural + "." + groupName

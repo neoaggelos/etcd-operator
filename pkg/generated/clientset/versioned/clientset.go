@@ -19,7 +19,7 @@ limitations under the License.
 package versioned
 
 import (
-	etcdv1beta2 "github.com/coreos/etcd-operator/pkg/generated/clientset/versioned/typed/etcd/v1beta2"
+	etcdv1beta3 "github.com/coreos/etcd-operator/pkg/generated/clientset/versioned/typed/etcd/v1beta3"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
@@ -27,27 +27,27 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	EtcdV1beta2() etcdv1beta2.EtcdV1beta2Interface
+	EtcdV1beta3() etcdv1beta3.EtcdV1beta3Interface
 	// Deprecated: please explicitly pick a version if possible.
-	Etcd() etcdv1beta2.EtcdV1beta2Interface
+	Etcd() etcdv1beta3.EtcdV1beta3Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	etcdV1beta2 *etcdv1beta2.EtcdV1beta2Client
+	etcdV1beta3 *etcdv1beta3.EtcdV1beta3Client
 }
 
-// EtcdV1beta2 retrieves the EtcdV1beta2Client
-func (c *Clientset) EtcdV1beta2() etcdv1beta2.EtcdV1beta2Interface {
-	return c.etcdV1beta2
+// EtcdV1beta3 retrieves the EtcdV1beta3Client
+func (c *Clientset) EtcdV1beta3() etcdv1beta3.EtcdV1beta3Interface {
+	return c.etcdV1beta3
 }
 
 // Deprecated: Etcd retrieves the default version of EtcdClient.
 // Please explicitly pick a version.
-func (c *Clientset) Etcd() etcdv1beta2.EtcdV1beta2Interface {
-	return c.etcdV1beta2
+func (c *Clientset) Etcd() etcdv1beta3.EtcdV1beta3Interface {
+	return c.etcdV1beta3
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -66,7 +66,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 	var cs Clientset
 	var err error
-	cs.etcdV1beta2, err = etcdv1beta2.NewForConfig(&configShallowCopy)
+	cs.etcdV1beta3, err = etcdv1beta3.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
-	cs.etcdV1beta2 = etcdv1beta2.NewForConfigOrDie(c)
+	cs.etcdV1beta3 = etcdv1beta3.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -91,7 +91,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.etcdV1beta2 = etcdv1beta2.New(c)
+	cs.etcdV1beta3 = etcdv1beta3.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

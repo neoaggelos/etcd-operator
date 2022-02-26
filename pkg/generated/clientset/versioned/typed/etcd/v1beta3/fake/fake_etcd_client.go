@@ -19,30 +19,30 @@ limitations under the License.
 package fake
 
 import (
-	v1beta2 "github.com/coreos/etcd-operator/pkg/generated/clientset/versioned/typed/etcd/v1beta2"
+	v1beta3 "github.com/coreos/etcd-operator/pkg/generated/clientset/versioned/typed/etcd/v1beta3"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )
 
-type FakeEtcdV1beta2 struct {
+type FakeEtcdV1beta3 struct {
 	*testing.Fake
 }
 
-func (c *FakeEtcdV1beta2) EtcdBackups(namespace string) v1beta2.EtcdBackupInterface {
+func (c *FakeEtcdV1beta3) EtcdBackups(namespace string) v1beta3.EtcdBackupInterface {
 	return &FakeEtcdBackups{c, namespace}
 }
 
-func (c *FakeEtcdV1beta2) EtcdClusters(namespace string) v1beta2.EtcdClusterInterface {
+func (c *FakeEtcdV1beta3) EtcdClusters(namespace string) v1beta3.EtcdClusterInterface {
 	return &FakeEtcdClusters{c, namespace}
 }
 
-func (c *FakeEtcdV1beta2) EtcdRestores(namespace string) v1beta2.EtcdRestoreInterface {
+func (c *FakeEtcdV1beta3) EtcdRestores(namespace string) v1beta3.EtcdRestoreInterface {
 	return &FakeEtcdRestores{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeEtcdV1beta2) RESTClient() rest.Interface {
+func (c *FakeEtcdV1beta3) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

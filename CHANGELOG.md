@@ -6,6 +6,9 @@
 
 ### Changed
 
+- Changes in the cluster object's type metadata:
+  - The `apiVersion` field has been changed from `etcd.coreos.com/v1beta2` to `etcd.database.coreos.com/v1beta3`
+
 ### Removed
 
 ### Fixed

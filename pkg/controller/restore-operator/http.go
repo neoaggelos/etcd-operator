@@ -21,7 +21,7 @@ import (
 	"io"
 	"net/http"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/backup/backupapi"
 	"github.com/coreos/etcd-operator/pkg/backup/reader"
 	"github.com/coreos/etcd-operator/pkg/util/alibabacloudutil/ossfactory"

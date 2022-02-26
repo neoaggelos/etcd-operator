@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/backup/writer"
 	"github.com/coreos/etcd-operator/pkg/generated/clientset/versioned"
 	"github.com/coreos/etcd-operator/pkg/util"
@@ -120,7 +120,7 @@ func getVersionFromImage(image string) string {
 func waitSizeReachedWithAccept(t *testing.T, crClient versioned.Interface, size, retries int, cl *api.EtcdCluster, accepts ...acceptFunc) ([]string, error) {
 	var names []string
 	err := retryutil.Retry(retryInterval, retries, func() (done bool, err error) {
-		currCluster, err := crClient.EtcdV1beta2().EtcdClusters(cl.Namespace).Get(cl.Name, metav1.GetOptions{})
+		currCluster, err := crClient.EtcdV1beta3().EtcdClusters(cl.Namespace).Get(cl.Name, metav1.GetOptions{})
 		if err != nil {
 			return false, err
 		}
@@ -147,7 +147,7 @@ func waitSizeReachedWithAccept(t *testing.T, crClient versioned.Interface, size,
 func WaitUntilMembersWithNamesDeleted(t *testing.T, crClient versioned.Interface, retries int, cl *api.EtcdCluster, targetNames ...string) ([]string, error) {
 	var remaining []string
 	err := retryutil.Retry(retryInterval, retries, func() (done bool, err error) {
-		currCluster, err := crClient.EtcdV1beta2().EtcdClusters(cl.Namespace).Get(cl.Name, metav1.GetOptions{})
+		currCluster, err := crClient.EtcdV1beta3().EtcdClusters(cl.Namespace).Get(cl.Name, metav1.GetOptions{})
 		if err != nil {
 			return false, err
 		}

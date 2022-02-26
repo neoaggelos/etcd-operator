@@ -19,7 +19,7 @@ import (
 	"crypto/tls"
 	"fmt"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/backup"
 	"github.com/coreos/etcd-operator/pkg/backup/writer"
 	"github.com/coreos/etcd-operator/pkg/util/gcputil/gcsfactory"

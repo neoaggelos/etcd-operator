@@ -8,6 +8,6 @@ vendor/k8s.io/code-generator/generate-groups.sh \
   "all" \
   "github.com/coreos/etcd-operator/pkg/generated" \
   "github.com/coreos/etcd-operator/pkg/apis" \
-  "etcd:v1beta2" \
+  "etcd:v1beta3" \
   --go-header-file "./hack/k8s/codegen/boilerplate.go.txt" \
   $@

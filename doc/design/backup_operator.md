@@ -8,22 +8,22 @@ Currently, etcd-operator supports various backup strategies such as PV, S3, and 
 
 To give user the flexibility of handling etcd backup his/her own way and to decouple backup logic out of etcd operator, a standalone etcd-backup operator can be used to manage the backup.
 
-## A Proposed Architecture 
+## A Proposed Architecture
 
 In order to control backup of etcd clusters, a standalone etcd backup operator can be used to listen for a customized backup CRD:
 
 First, User creates a backup CRD that etcd backup operator will be watching on:
 
 ```yaml
-apiVersion: apiextentions.k8s.io/v1beta2
+apiVersion: apiextentions.k8s.io/v1beta3
 kind: CustomResourceDefiniton
 metadata:
   name: etcdbackups.etcd.database.coreos.com
 spec:
   group: etcd.database.coreos.com
-  version: v1beta2
+  version: v1beta3
   Scope: Namespaced
-  names: 
+  names:
     kind: EtcdBackup
     plural: etcdbackups
 ```
@@ -31,9 +31,9 @@ spec:
 Then, start the etcd-backup-operator where it does the following:
 
 * checks if CRD exists.
-* watches for new backup CR. 
+* watches for new backup CR.
 * manages backup according to `EtcdBackupSpec`.
-* reports backup status. 
+* reports backup status.
 
 `EtcdBackupSpec` definition:
 
@@ -70,4 +70,3 @@ type S3Source struct {
 	AWSSecret string `json:"awsSecret,omitempty"`
 }
 ```
-

@@ -7,7 +7,7 @@ To create a cluster with backups to ABS, set `backup.storageType` to `"ABS"`, su
 An example cluster manifest would look like:
 
 ```bash
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.coreos.com/v1beta3"
 kind: "EtcdCluster"
 metadata:
   name: "etcd-cluster-with-abs-backup"
@@ -20,7 +20,7 @@ spec:
       absContainer: "myabscontainer"
       absSecret: "abs-credentials"
 
-``` 
+```
 
 ### In Detail:
 

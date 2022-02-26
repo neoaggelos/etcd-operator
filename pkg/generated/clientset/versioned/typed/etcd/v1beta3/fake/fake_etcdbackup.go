@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	v1beta2 "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	v1beta3 "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -30,29 +30,29 @@ import (
 
 // FakeEtcdBackups implements EtcdBackupInterface
 type FakeEtcdBackups struct {
-	Fake *FakeEtcdV1beta2
+	Fake *FakeEtcdV1beta3
 	ns   string
 }
 
-var etcdbackupsResource = schema.GroupVersionResource{Group: "etcd.database.coreos.com", Version: "v1beta2", Resource: "etcdbackups"}
+var etcdbackupsResource = schema.GroupVersionResource{Group: "etcd.database.coreos.com", Version: "v1beta3", Resource: "etcdbackups"}
 
-var etcdbackupsKind = schema.GroupVersionKind{Group: "etcd.database.coreos.com", Version: "v1beta2", Kind: "EtcdBackup"}
+var etcdbackupsKind = schema.GroupVersionKind{Group: "etcd.database.coreos.com", Version: "v1beta3", Kind: "EtcdBackup"}
 
 // Get takes name of the etcdBackup, and returns the corresponding etcdBackup object, and an error if there is any.
-func (c *FakeEtcdBackups) Get(name string, options v1.GetOptions) (result *v1beta2.EtcdBackup, err error) {
+func (c *FakeEtcdBackups) Get(name string, options v1.GetOptions) (result *v1beta3.EtcdBackup, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(etcdbackupsResource, c.ns, name), &v1beta2.EtcdBackup{})
+		Invokes(testing.NewGetAction(etcdbackupsResource, c.ns, name), &v1beta3.EtcdBackup{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1beta2.EtcdBackup), err
+	return obj.(*v1beta3.EtcdBackup), err
 }
 
 // List takes label and field selectors, and returns the list of EtcdBackups that match those selectors.
-func (c *FakeEtcdBackups) List(opts v1.ListOptions) (result *v1beta2.EtcdBackupList, err error) {
+func (c *FakeEtcdBackups) List(opts v1.ListOptions) (result *v1beta3.EtcdBackupList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(etcdbackupsResource, etcdbackupsKind, c.ns, opts), &v1beta2.EtcdBackupList{})
+		Invokes(testing.NewListAction(etcdbackupsResource, etcdbackupsKind, c.ns, opts), &v1beta3.EtcdBackupList{})
 
 	if obj == nil {
 		return nil, err
@@ -62,8 +62,8 @@ func (c *FakeEtcdBackups) List(opts v1.ListOptions) (result *v1beta2.EtcdBackupL
 	if label == nil {
 		label = labels.Everything()
 	}
-	list := &v1beta2.EtcdBackupList{ListMeta: obj.(*v1beta2.EtcdBackupList).ListMeta}
-	for _, item := range obj.(*v1beta2.EtcdBackupList).Items {
+	list := &v1beta3.EtcdBackupList{ListMeta: obj.(*v1beta3.EtcdBackupList).ListMeta}
+	for _, item := range obj.(*v1beta3.EtcdBackupList).Items {
 		if label.Matches(labels.Set(item.Labels)) {
 			list.Items = append(list.Items, item)
 		}
@@ -79,43 +79,43 @@ func (c *FakeEtcdBackups) Watch(opts v1.ListOptions) (watch.Interface, error) {
 }
 
 // Create takes the representation of a etcdBackup and creates it.  Returns the server's representation of the etcdBackup, and an error, if there is any.
-func (c *FakeEtcdBackups) Create(etcdBackup *v1beta2.EtcdBackup) (result *v1beta2.EtcdBackup, err error) {
+func (c *FakeEtcdBackups) Create(etcdBackup *v1beta3.EtcdBackup) (result *v1beta3.EtcdBackup, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(etcdbackupsResource, c.ns, etcdBackup), &v1beta2.EtcdBackup{})
+		Invokes(testing.NewCreateAction(etcdbackupsResource, c.ns, etcdBackup), &v1beta3.EtcdBackup{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1beta2.EtcdBackup), err
+	return obj.(*v1beta3.EtcdBackup), err
 }
 
 // Update takes the representation of a etcdBackup and updates it. Returns the server's representation of the etcdBackup, and an error, if there is any.
-func (c *FakeEtcdBackups) Update(etcdBackup *v1beta2.EtcdBackup) (result *v1beta2.EtcdBackup, err error) {
+func (c *FakeEtcdBackups) Update(etcdBackup *v1beta3.EtcdBackup) (result *v1beta3.EtcdBackup, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(etcdbackupsResource, c.ns, etcdBackup), &v1beta2.EtcdBackup{})
+		Invokes(testing.NewUpdateAction(etcdbackupsResource, c.ns, etcdBackup), &v1beta3.EtcdBackup{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1beta2.EtcdBackup), err
+	return obj.(*v1beta3.EtcdBackup), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeEtcdBackups) UpdateStatus(etcdBackup *v1beta2.EtcdBackup) (*v1beta2.EtcdBackup, error) {
+func (c *FakeEtcdBackups) UpdateStatus(etcdBackup *v1beta3.EtcdBackup) (*v1beta3.EtcdBackup, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(etcdbackupsResource, "status", c.ns, etcdBackup), &v1beta2.EtcdBackup{})
+		Invokes(testing.NewUpdateSubresourceAction(etcdbackupsResource, "status", c.ns, etcdBackup), &v1beta3.EtcdBackup{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1beta2.EtcdBackup), err
+	return obj.(*v1beta3.EtcdBackup), err
 }
 
 // Delete takes name of the etcdBackup and deletes it. Returns an error if one occurs.
 func (c *FakeEtcdBackups) Delete(name string, options *v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(etcdbackupsResource, c.ns, name), &v1beta2.EtcdBackup{})
+		Invokes(testing.NewDeleteAction(etcdbackupsResource, c.ns, name), &v1beta3.EtcdBackup{})
 
 	return err
 }
@@ -124,17 +124,17 @@ func (c *FakeEtcdBackups) Delete(name string, options *v1.DeleteOptions) error {
 func (c *FakeEtcdBackups) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
 	action := testing.NewDeleteCollectionAction(etcdbackupsResource, c.ns, listOptions)
 
-	_, err := c.Fake.Invokes(action, &v1beta2.EtcdBackupList{})
+	_, err := c.Fake.Invokes(action, &v1beta3.EtcdBackupList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched etcdBackup.
-func (c *FakeEtcdBackups) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1beta2.EtcdBackup, err error) {
+func (c *FakeEtcdBackups) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1beta3.EtcdBackup, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(etcdbackupsResource, c.ns, name, types.ApplyPatchType, data, subresources...), &v1beta2.EtcdBackup{})
+		Invokes(testing.NewPatchSubresourceAction(etcdbackupsResource, c.ns, name, types.ApplyPatchType, data, subresources...), &v1beta3.EtcdBackup{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1beta2.EtcdBackup), err
+	return obj.(*v1beta3.EtcdBackup), err
 }

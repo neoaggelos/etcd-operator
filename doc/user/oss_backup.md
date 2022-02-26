@@ -9,9 +9,9 @@ kubectl apply -f example/etcd-backup-operator/deployment.yaml
 ## Setup Alibaba Cloud backup account, OSS bucket, and Secret
 
 1. Login [Alibaba Cloud Console](https://www.alibabacloud.com) (or [Aliyun Console](https://www.aliyun.com/) if you are in China) and create your own [AccessKey](https://www.alibabacloud.com/help/doc-detail/29009.htm) which gives you the AccessKeyID (AKID) and AccessKeySecret (AKS). You can optionally create an Object Storage Service ([OSS](https://www.alibabacloud.com/help/doc-detail/31947.htm)) bucket for backups.
-2. Create a secret storing your AKID and AKS in Kubernetes.  
+2. Create a secret storing your AKID and AKS in Kubernetes.
 
- ```yaml  
+ ```yaml
 apiVersion: v1
   kind: Secret
   metadata:
@@ -20,11 +20,11 @@ apiVersion: v1
   data:
     accessKeyID: <my-access-key-id>
     accessKeySecret: <my-access-key-secret>
- ```  
+ ```
 
-3. Create an `EtcdBackup` CR file `etcdbackup.yaml` which uses secret `my-oss-credentials` from the previous step.  
+3. Create an `EtcdBackup` CR file `etcdbackup.yaml` which uses secret `my-oss-credentials` from the previous step.
 ```yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.coreos.com/v1beta3
 kind: EtcdBackup
 metadata:
   name: etcd-cluster-with-oss-backup
@@ -38,16 +38,16 @@ spec:
     endpoint: http://oss-cn-hangzhou.aliyuncs.com
     ossSecret: my-oss-credentials
     path: my-etcd-backups-bucket/etcd.backup
-```   
+```
 
-4. Apply yaml file to kubernetes cluster.  
+4. Apply yaml file to kubernetes cluster.
 ```sh
 kubectl apply -f etcdbackup.yaml
 ```
 5. Check the `status` section of the `EtcdBackup` CR.
 ```console
 $ kubectl get EtcdBackup etcd-cluster-with-oss-backup -o yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.coreos.com/v1beta3
 kind: EtcdBackup
 ...
 spec:
@@ -83,7 +83,7 @@ kubectl delete pod -l app=etcd,etcd_cluster=example-etcd-cluster --force --grace
 
 1. Create an EtcdRestore CR.
 ```yaml
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.coreos.com/v1beta3"
 kind: "EtcdRestore"
 metadata:
   # The restore CR name must be the same as spec.etcdCluster.name
@@ -100,10 +100,10 @@ spec:
     endpoint: http://oss-cn-hangzhou.aliyuncs.com
 ```
 
-2. Check the `status` section of the `EtcdRestore` CR.     
+2. Check the `status` section of the `EtcdRestore` CR.
 ```sh
 $ kubectl get etcdrestore example-etcd-cluster -o yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.coreos.com/v1beta3
 kind: EtcdRestore
 ...
 spec:
@@ -118,8 +118,8 @@ status:
   succeeded: true
 ```
 
-3. Verify the `EtcdCluster` CR and restored pods for the restored cluster.    
-```sh  
+3. Verify the `EtcdCluster` CR and restored pods for the restored cluster.
+```sh
 $ kubectl get etcdcluster
 $ kubectl get pods -l app=etcd,etcd_cluster=example-etcd-cluster
 ```

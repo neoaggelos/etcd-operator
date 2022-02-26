@@ -8,7 +8,7 @@ To create a backup in OSS, set `backup.storageType` to `"OSS"`, supply the path 
 An example backup manifest would look like:
 
 ```yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.coreos.com/v1beta3
 kind: EtcdBackup
 metadata:
   name: etcd-cluster-with-oss-backup

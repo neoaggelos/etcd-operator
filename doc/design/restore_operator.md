@@ -7,7 +7,7 @@ Restore operator restores an etcd cluster from existing backup.
 The new design will assume EtcdCluster have three phases:
 
 - **Creating**: etcd operator will create a seed member.
-- **Running**: etcd operator will keep reconciling cluster membership, 
+- **Running**: etcd operator will keep reconciling cluster membership,
   actual running pods, and desired size.
 - **Failed**: Encountered unrecoverable failure, e.g. lose majority of the cluster.
 
@@ -20,15 +20,15 @@ into Running phase.
 Restore operator API will be exposed as CRD:
 
 ```yaml
-apiVersion: apiextentions.k8s.io/v1beta2
+apiVersion: apiextentions.k8s.io/v1beta3
 kind: CustomResourceDefiniton
 metadata:
   name: etcdrestores.etcd.database.coreos.com
 spec:
   group: etcd.database.coreos.com
-  version: v1beta2
+  version: v1beta3
   Scope: Namespaced
-  names: 
+  names:
     kind: EtcdRestore
     plural: etcdrestores
 ```
