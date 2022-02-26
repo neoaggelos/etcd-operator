@@ -139,6 +139,12 @@ type PodPolicy struct {
 	// not the stable storage. Future work need to make it used as stable storage.
 	PersistentVolumeClaimSpec *v1.PersistentVolumeClaimSpec `json:"persistentVolumeClaimSpec,omitempty"`
 
+	// HostPathVolume specifies that a volume of type HostPath should be used instead of a PVC.
+	// HostPathVolume may contain $NAME, which will be replaced with the name of the etcd member
+	// for which the volume is created. $NAME is guaranteed to be unique.
+	// HostPathVolume is ignored when PersistentVolumeClaimSpec is specified.
+	HostPathVolume string `json:"hostPathVolume,omitempty"`
+
 	// Annotations specifies the annotations to attach to pods the operator creates for the
 	// etcd cluster.
 	// The "etcd.version" annotation is reserved for the internal use of the etcd operator.

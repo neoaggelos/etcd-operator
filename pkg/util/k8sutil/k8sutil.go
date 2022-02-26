@@ -30,7 +30,7 @@ import (
 	"github.com/pborman/uuid"
 
 	appsv1beta1 "k8s.io/api/apps/v1beta1"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -246,15 +246,10 @@ func newEtcdServiceManifest(svcName, clusterName, clusterIP string, ports []v1.S
 	return svc
 }
 
-// AddEtcdVolumeToPod abstract the process of appending volume spec to pod spec
-func AddEtcdVolumeToPod(pod *v1.Pod, pvc *v1.PersistentVolumeClaim) {
-	vol := v1.Volume{Name: etcdVolumeName}
-	if pvc != nil {
-		vol.VolumeSource = v1.VolumeSource{
-			PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{ClaimName: pvc.Name},
-		}
-	} else {
-		vol.VolumeSource = v1.VolumeSource{EmptyDir: &v1.EmptyDirVolumeSource{}}
+func AddEtcdVolumeToPod(pod *v1.Pod, volumeSource v1.VolumeSource) {
+	vol := v1.Volume{
+		Name:         etcdVolumeName,
+		VolumeSource: volumeSource,
 	}
 	pod.Spec.Volumes = append(pod.Spec.Volumes, vol)
 }
@@ -274,7 +269,9 @@ func NewSeedMemberPod(clusterName string, ms etcdutil.MemberSet, m *etcdutil.Mem
 	token := uuid.New()
 	pod := newEtcdPod(m, ms.PeerURLPairs(), clusterName, "new", token, cs)
 	// TODO: PVC datadir support for restore process
-	AddEtcdVolumeToPod(pod, nil)
+	AddEtcdVolumeToPod(pod, v1.VolumeSource{
+		EmptyDir: &v1.EmptyDirVolumeSource{},
+	})
 	if backupURL != nil {
 		addRecoveryToPod(pod, token, m, cs, backupURL)
 	}
