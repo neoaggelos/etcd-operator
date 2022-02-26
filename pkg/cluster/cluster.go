@@ -394,6 +394,7 @@ func (c *Cluster) createPod(members etcdutil.MemberSet, m *etcdutil.Member, stat
 		k8sutil.AddEtcdVolumeToPod(pod, v1.VolumeSource{
 			HostPath: &v1.HostPathVolumeSource{
 				Path: path,
+				Type: func(s string) *v1.HostPathType { t := v1.HostPathType(s); return &t }("DirectoryOrCreate"),
 			},
 		})
 	} else {
