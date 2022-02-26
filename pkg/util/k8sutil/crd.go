@@ -63,7 +63,12 @@ func CreateCRD(clientset apiextensionsclient.Interface, crdName, rkind, rplural,
 				Storage: true,
 				Served:  true,
 				// TODO: define schema
-				Schema: nil,
+				Schema: &apiextensionsv1.CustomResourceValidation{
+					OpenAPIV3Schema: &apiextensionsv1.JSONSchemaProps{
+						Type:                   "object",
+						XPreserveUnknownFields: func(b bool) *bool { return &b }(true),
+					},
+				},
 			}},
 			Scope: apiextensionsv1.NamespaceScoped,
 			Names: apiextensionsv1.CustomResourceDefinitionNames{
