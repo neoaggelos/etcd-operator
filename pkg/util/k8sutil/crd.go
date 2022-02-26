@@ -66,7 +66,7 @@ func CreateCRD(clientset apiextensionsclient.Interface, crdName, rkind, rplural,
 					{Type: "number", Name: "size", JSONPath: ".spec.size"},
 					{Type: "string", Name: "version", JSONPath: ".spec.version"},
 					{Type: "string", Name: "service", JSONPath: ".status.serviceName"},
-					{Type: "string", Name: "status", JSONPath: ".status.conditions[0].reason"},
+					{Type: "string", Name: "status", JSONPath: ".status.conditions[0].type"},
 					{Type: "date", Name: "age", JSONPath: ".metadata.creationTimestamp"},
 				},
 				// TODO: define schema
