@@ -62,6 +62,10 @@ func CreateCRD(clientset apiextensionsclient.Interface, crdName, rkind, rplural,
 				Name:    api.SchemeGroupVersion.Version,
 				Storage: true,
 				Served:  true,
+				AdditionalPrinterColumns: []apiextensionsv1.CustomResourceColumnDefinition{
+					{Type: "number", Name: "size", JSONPath: ".spec.size"},
+					{Type: "string", Name: "version", JSONPath: ".spec.version"},
+				},
 				// TODO: define schema
 				Schema: &apiextensionsv1.CustomResourceValidation{
 					OpenAPIV3Schema: &apiextensionsv1.JSONSchemaProps{
