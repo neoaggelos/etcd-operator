@@ -23,6 +23,7 @@ import (
 	"github.com/coreos/etcd-operator/pkg/util/constants"
 	"github.com/coreos/etcd-operator/pkg/util/etcdutil"
 	"github.com/coreos/etcd-operator/pkg/util/k8sutil"
+	"github.com/sirupsen/logrus"
 
 	"github.com/coreos/etcd/etcdserver/api/v3rpc/rpctypes"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -108,7 +109,10 @@ func (c *Cluster) resize(readyNodes int) error {
 
 	if c.members.Size() < c.cluster.Spec.Size {
 		if c.cluster.Spec.LimitSizeToMaxReadyNodes && c.members.Size() >= readyNodes {
-			c.logger.Infof("cluster has %d ready nodes and %d members, not adding another")
+			c.logger.WithFields(logrus.Fields{
+				"etcd_members": c.members.Size(),
+				"ready_nodes":  readyNodes,
+			}).Info("limitSizeToMaxReadyNodes is set, not adding new etcd members")
 			return nil
 		}
 		return c.addOneMember()
