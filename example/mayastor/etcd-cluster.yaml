@@ -4,10 +4,11 @@ metadata:
   name: mayastor-etcd
   namespace: mayastor
 spec:
-  size: 1
+  size: 3
+  limitSizeToMaxReadyNodes: true
   version: "3.5.2"
   pod:
-    hostPathVolume: /var/snap/microk8s/common/default-storage/mayastor-etcd/$NAME
+    # hostPathVolume: /var/snap/microk8s/common/default-storage/mayastor-etcd/$NAME
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

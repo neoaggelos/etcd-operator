@@ -5,6 +5,7 @@
 - Added `spec.Pod.ClusterDomain` to explicitly set the cluster domain used for the etcd member URLs. [#2082](https://github.com/coreos/etcd-operator/pull/2082)
 - Added `spec.Pod.HostPathVolume` to use hostpath volumes for etcd data.
 - Added `spec.LimitSizeToMaxReadyNodes` to prevent scaling up clusters when there is shortage of ready nodes.
+- Added `spec.Pod.RestartPolicy` to add configurable RestartPolicy for etcd pods. This is particularly useful for single-node etcd clusters that fail if the pod stops (e.g. during a node reboot).
 
 ### Changed
 
