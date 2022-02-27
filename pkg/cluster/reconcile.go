@@ -46,7 +46,7 @@ func (c *Cluster) reconcile(pods []*v1.Pod, readyNodes []v1.Node) error {
 	sp := c.cluster.Spec
 	running := podsToMemberSet(pods, c.isSecureClient())
 	if !running.IsEqual(c.members) || c.members.Size() != sp.Size {
-		return c.reconcileMembers(running)
+		return c.reconcileMembers(running, readyNodes)
 	}
 	c.status.ClearCondition(api.ClusterConditionScaling)
 
@@ -73,7 +73,7 @@ func (c *Cluster) reconcile(pods []*v1.Pod, readyNodes []v1.Node) error {
 // 3. If L = members, the current state matches the membership state. END.
 // 4. If len(L) < len(members)/2 + 1, return quorum lost error.
 // 5. Add one missing member. END.
-func (c *Cluster) reconcileMembers(running etcdutil.MemberSet) error {
+func (c *Cluster) reconcileMembers(running etcdutil.MemberSet, readyNodes []v1.Node) error {
 	c.logger.Infof("running members: %s", running)
 	c.logger.Infof("cluster membership: %s", c.members)
 
@@ -89,7 +89,7 @@ func (c *Cluster) reconcileMembers(running etcdutil.MemberSet) error {
 	L := running.Diff(unknownMembers)
 
 	if L.Size() == c.members.Size() {
-		return c.resize()
+		return c.resize(len(readyNodes))
 	}
 
 	if L.Size() < c.members.Size()/2+1 {
