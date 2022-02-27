@@ -35,7 +35,7 @@ var ErrLostQuorum = errors.New("lost quorum")
 // reconcile reconciles cluster current state to desired state specified by spec.
 // - it tries to reconcile the cluster to desired size.
 // - if the cluster needs for upgrade, it tries to upgrade old member one by one.
-func (c *Cluster) reconcile(pods []*v1.Pod) error {
+func (c *Cluster) reconcile(pods []*v1.Pod, readyNodes []v1.Node) error {
 	c.logger.Infoln("Start reconciling")
 	defer c.logger.Infoln("Finish reconciling")
 
@@ -101,12 +101,16 @@ func (c *Cluster) reconcileMembers(running etcdutil.MemberSet) error {
 	return c.removeDeadMember(c.members.Diff(L).PickOne())
 }
 
-func (c *Cluster) resize() error {
+func (c *Cluster) resize(readyNodes int) error {
 	if c.members.Size() == c.cluster.Spec.Size {
 		return nil
 	}
 
 	if c.members.Size() < c.cluster.Spec.Size {
+		if c.cluster.Spec.LimitSizeToMaxReadyNodes && c.members.Size() >= readyNodes {
+			c.logger.Infof("cluster has %d ready nodes and %d members, not adding another")
+			return nil
+		}
 		return c.addOneMember()
 	}
 

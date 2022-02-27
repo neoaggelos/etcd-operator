@@ -99,6 +99,10 @@ type ClusterSpec struct {
 
 	// etcd cluster TLS configuration
 	TLS *TLSPolicy `json:"TLS,omitempty"`
+
+	// LimitSizeToMaxReadyNodes defines whether to limit the maximum number of
+	// etcd members to that of the total ready nodes in the Kubernetes cluster.
+	LimitSizeToMaxReadyNodes bool `json:"limitSizeToMaxReadyNodes,omitempty"`
 }
 
 // PodPolicy defines the policy to create pod for the etcd container.

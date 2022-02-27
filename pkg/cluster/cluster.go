@@ -238,6 +238,12 @@ func (c *Cluster) run() {
 				reconcileFailed.WithLabelValues("failed to poll pods").Inc()
 				continue
 			}
+			nodes, err := c.pollNodes()
+			if err != nil {
+				c.logger.Errorf("fail to poll nodes: %v", err)
+				reconcileFailed.WithLabelValues("failed to poll nodes").Inc()
+				continue
+			}
 
 			if len(pending) > 0 {
 				// Pod startup might take long, e.g. pulling image. It would deterministically become running or succeeded/failed later.
@@ -259,7 +265,7 @@ func (c *Cluster) run() {
 					break
 				}
 			}
-			rerr = c.reconcile(running)
+			rerr = c.reconcile(running, nodes)
 			if rerr != nil {
 				c.logger.Errorf("failed to reconcile: %v", rerr)
 				break
@@ -416,6 +422,29 @@ func (c *Cluster) removePod(name string) error {
 		}
 	}
 	return nil
+}
+
+func (c *Cluster) pollNodes() (nodes []v1.Node, err error) {
+	labelSelector := ""
+	if nodeSelector := c.cluster.Spec.Pod.NodeSelector; len(nodeSelector) > 0 {
+		labelSelector = metav1.FormatLabelSelector(&metav1.LabelSelector{MatchLabels: nodeSelector})
+	}
+
+	nodeList, err := c.config.KubeCli.CoreV1().Nodes().List(metav1.ListOptions{
+		LabelSelector: labelSelector,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list available nodes: %v", err)
+	}
+	readyNodes := make([]v1.Node, 0, len(nodeList.Items))
+	for _, node := range nodeList.Items {
+		for _, condition := range node.Status.Conditions {
+			if condition.Type == v1.NodeReady && condition.Status == v1.ConditionTrue {
+				readyNodes = append(readyNodes, node)
+			}
+		}
+	}
+	return readyNodes, nil
 }
 
 func (c *Cluster) pollPods() (running, pending []*v1.Pod, err error) {
