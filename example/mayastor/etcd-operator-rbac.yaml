@@ -35,7 +35,6 @@ rules:
   - ""
   resources:
   - secrets
-  - nodes
   verbs:
   - get
 ---
@@ -44,6 +43,18 @@ kind: ServiceAccount
 metadata:
   namespace: mayastor
   name: etcd-operator-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: etcd-operator-cluster-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - list
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -58,3 +69,16 @@ roleRef:
   kind: Role
   apiGroup: rbac.authorization.k8s.io
   name: etcd-operator-role
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: etcd-operator-cluster-role-binding
+subjects:
+- kind: ServiceAccount
+  name: etcd-operator-sa
+  namespace: mayastor
+roleRef:
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+  name: etcd-operator-cluster-role
