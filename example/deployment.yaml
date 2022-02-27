@@ -11,11 +11,11 @@ spec:
     spec:
       containers:
       - name: etcd-operator
-        image: test-image:1.0.0
+        image: neoaggelos/etcd-operator:0.10.0-5
         command:
         - etcd-operator
         # Uncomment to act for resources in all namespaces. More information in doc/user/clusterwide.md
-        - -cluster-wide
+        # - -cluster-wide
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:
