@@ -3,11 +3,19 @@
 ### Added
 
 - Added `spec.Pod.ClusterDomain` to explicitly set the cluster domain used for the etcd member URLs. [#2082](https://github.com/coreos/etcd-operator/pull/2082)
+- Added `spec.Pod.HostPathVolume` to use hostpath volumes for etcd data.
+- Added `spec.LimitSizeToMaxReadyNodes` to prevent scaling up clusters when there is shortage of ready nodes.
 
 ### Changed
 
 - Changes in the cluster object's type metadata:
   - The `apiVersion` field has been changed from `etcd.coreos.com/v1beta2` to `etcd.database.coreos.com/v1beta3`
+- Migrate to `apiextensions.k8s.io/v1` for the `EtcdCluster` CRD.
+- The etcd operator will no longer create CustomResourceDefinitions by default, they have been moved to `example/crd.yaml`.
+- Update Kubernetes to 0.17.1.
+- Update Prometheus.
+- Update etcd client library to 3.5.2.
+- Migrate to Go modules for building the operator.
 
 ### Removed
 
