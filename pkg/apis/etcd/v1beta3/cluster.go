@@ -168,6 +168,9 @@ type PodPolicy struct {
 	// '.cluster.local'.
 	// The default is to not set a cluster domain explicitly.
 	ClusterDomain string `json:"ClusterDomain"`
+
+	// RestartPolicy configures the RestartPolicy for etcd pods.
+	RestartPolicy v1.RestartPolicy `json:"restartPolicy,omitempty"`
 }
 
 // TODO: move this to initializer

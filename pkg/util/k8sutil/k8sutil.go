@@ -357,6 +357,10 @@ func newEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state,
 	if cs.Pod != nil {
 		DNSTimeout = cs.Pod.DNSTimeoutInSecond
 	}
+	restartPolicy := v1.RestartPolicyNever
+	if cs.Pod.RestartPolicy != "" {
+		restartPolicy = cs.Pod.RestartPolicy
+	}
 	pod := &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        m.Name,
@@ -388,7 +392,7 @@ func newEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state,
 					done`, DNSTimeout, m.Addr())},
 			}},
 			Containers:    []v1.Container{container},
-			RestartPolicy: v1.RestartPolicyNever,
+			RestartPolicy: restartPolicy,
 			Volumes:       volumes,
 			// DNS A record: `[m.Name].[clusterName].Namespace.svc`
 			// For example, etcd-795649v9kq in default namesapce will have DNS name
