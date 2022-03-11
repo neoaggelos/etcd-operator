@@ -1,0 +1,22 @@
+operator:
+  enabled: true
+rbac:
+  enabled: true
+
+clusters:
+  - name: etcd
+    spec:
+      size: 3
+      limitSizeToMaxReadyNodes: true
+      version: "3.5.2"
+      pod:
+        restartPolicy: Always
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: etcd_cluster
+                      operator: In
+                      values: [etcd]
+                topologyKey: kubernetes.io/hostname
