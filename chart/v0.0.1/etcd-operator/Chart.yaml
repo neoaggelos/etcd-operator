@@ -5,4 +5,4 @@ description: A Helm chart to deploy etcd-operator
 type: application
 version: 0.0.1
 
-appVersion: "0.10.0-5"
+appVersion: "0.10.0+git"

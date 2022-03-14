@@ -1,0 +1,9 @@
+{{- range .Values.clusters }}
+---
+apiVersion: etcd.database.canonical.com/v1beta3
+kind: EtcdCluster
+metadata:
+  name: {{ .name | quote }}
+  namespace: {{ $.Release.Namespace }}
+spec: {{ .spec | toYaml | nindent 2 }}
+{{- end }}
