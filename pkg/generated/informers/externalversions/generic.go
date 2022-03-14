@@ -52,7 +52,7 @@ func (f *genericInformer) Lister() cache.GenericLister {
 // TODO extend this to unknown resources with a client pool
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
-	// Group=etcd.database.coreos.com, Version=v1beta3
+	// Group=etcd.database.canonical.com, Version=v1beta3
 	case v1beta3.SchemeGroupVersion.WithResource("etcdbackups"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Etcd().V1beta3().EtcdBackups().Informer()}, nil
 	case v1beta3.SchemeGroupVersion.WithResource("etcdclusters"):

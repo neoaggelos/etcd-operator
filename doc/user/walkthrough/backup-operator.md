@@ -30,7 +30,7 @@ Verify that the etcd-backup-operator creates EtcdBackup CRD:
 ```sh
 $ kubectl get crd
 NAME                                    KIND
-etcdbackups.etcd.database.coreos.com    CustomResourceDefinition.v1beta1.apiextensions.k8s.io
+etcdbackups.etcd.database.canonical.com    CustomResourceDefinition.v1beta1.apiextensions.k8s.io
 ```
 
 ### Setup AWS Secret
@@ -76,7 +76,7 @@ Check the `status` section of the `EtcdBackup` CR:
 
 ```
 $ kubectl get EtcdBackup example-etcd-cluster-backup -o yaml
-apiVersion: etcd.database.coreos.com/v1beta3
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdBackup
 ...
 status:

@@ -56,7 +56,7 @@ Note that currently the etcd-restore-operator only supports restoring from backu
     ```sh
     $ kubectl get crd
     NAME                                       KIND
-    etcdrestores.etcd.database.coreos.com      CustomResourceDefinition.v1beta1.apiextensions.k8s.io
+    etcdrestores.etcd.database.canonical.com      CustomResourceDefinition.v1beta1.apiextensions.k8s.io
     ```
 
 ### Setup AWS Secret
@@ -101,7 +101,7 @@ sed -e 's|<full-s3-path>|mybucket/etcd.backup|g' \
 
     ```sh
     $ kubectl get etcdrestore example-etcd-cluster -o yaml
-    apiVersion: etcd.database.coreos.com/v1beta3
+    apiVersion: etcd.database.canonical.com/v1beta3
     kind: EtcdRestore
     ...
     status:
@@ -113,7 +113,7 @@ sed -e 's|<full-s3-path>|mybucket/etcd.backup|g' \
     ```
     $ kubectl get etcdcluster
     NAME                    KIND
-    example-etcd-cluster   EtcdCluster.v1beta3.etcd.database.coreos.com
+    example-etcd-cluster   EtcdCluster.v1beta3.etcd.database.canonical.com
     ```
 
 3. Verify that the etcd-operator scales the cluster to the desired size:

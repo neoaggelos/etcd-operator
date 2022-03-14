@@ -34,9 +34,9 @@ type FakeEtcdClusters struct {
 	ns   string
 }
 
-var etcdclustersResource = schema.GroupVersionResource{Group: "etcd.database.coreos.com", Version: "v1beta3", Resource: "etcdclusters"}
+var etcdclustersResource = schema.GroupVersionResource{Group: "etcd.database.canonical.com", Version: "v1beta3", Resource: "etcdclusters"}
 
-var etcdclustersKind = schema.GroupVersionKind{Group: "etcd.database.coreos.com", Version: "v1beta3", Kind: "EtcdCluster"}
+var etcdclustersKind = schema.GroupVersionKind{Group: "etcd.database.canonical.com", Version: "v1beta3", Kind: "EtcdCluster"}
 
 // Get takes name of the etcdCluster, and returns the corresponding etcdCluster object, and an error if there is any.
 func (c *FakeEtcdClusters) Get(name string, options v1.GetOptions) (result *v1beta3.EtcdCluster, err error) {

@@ -65,7 +65,7 @@ const (
 	defaultBusyboxImage = "busybox:1.28.0-glibc"
 
 	// AnnotationScope annotation name for defining instance scope. Used for specifying cluster wide clusters.
-	AnnotationScope = "etcd.database.coreos.com/scope"
+	AnnotationScope = "etcd.database.canonical.com/scope"
 	//AnnotationClusterWide annotation value for cluster wide clusters.
 	AnnotationClusterWide = "clusterwide"
 

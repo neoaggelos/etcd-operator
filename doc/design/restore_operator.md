@@ -23,9 +23,9 @@ Restore operator API will be exposed as CRD:
 apiVersion: apiextentions.k8s.io/v1beta3
 kind: CustomResourceDefiniton
 metadata:
-  name: etcdrestores.etcd.database.coreos.com
+  name: etcdrestores.etcd.database.canonical.com
 spec:
-  group: etcd.database.coreos.com
+  group: etcd.database.canonical.com
   version: v1beta3
   Scope: Namespaced
   names:

@@ -1,6 +1,6 @@
 {{- range .Values.clusters }}
 ---
-apiVersion: etcd.database.coreos.com/v1beta3
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdCluster
 metadata:
   name: {{ .name | quote }}

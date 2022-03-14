@@ -81,7 +81,7 @@ func TestHandleClusterEventClusterwide(t *testing.T) {
 			Name:      "test",
 			Namespace: "a",
 			Annotations: map[string]string{
-				"etcd.database.coreos.com/scope": "clusterwide",
+				"etcd.database.canonical.com/scope": "clusterwide",
 			},
 		},
 	}
@@ -147,7 +147,7 @@ func TestHandleClusterEventNamespacedIgnored(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "test",
 			Annotations: map[string]string{
-				"etcd.database.coreos.com/scope": "clusterwide",
+				"etcd.database.canonical.com/scope": "clusterwide",
 			},
 		},
 	}

@@ -11,7 +11,8 @@
 ### Changed
 
 - Changes in the cluster object's type metadata:
-  - The `apiVersion` field has been changed from `etcd.coreos.com/v1beta2` to `etcd.database.coreos.com/v1beta3`
+  - The `apiVersion` field has been changed from `etcd.database.coreos.com/v1beta2` to `etcd.database.canonical.com/v1beta3`
+- The annotation `etcd.database.coreos.com/scope: clusterwide` in `EtcdCluster` has been renamed to `etcd.database.canonical.com/scope: clusterwide`
 - Migrate to `apiextensions.k8s.io/v1` for the `EtcdCluster` CRD.
 - The etcd operator will no longer create CustomResourceDefinitions by default, they have been moved to `example/crd.yaml`.
 - Update Kubernetes to 0.17.1.

@@ -34,9 +34,9 @@ type FakeEtcdBackups struct {
 	ns   string
 }
 
-var etcdbackupsResource = schema.GroupVersionResource{Group: "etcd.database.coreos.com", Version: "v1beta3", Resource: "etcdbackups"}
+var etcdbackupsResource = schema.GroupVersionResource{Group: "etcd.database.canonical.com", Version: "v1beta3", Resource: "etcdbackups"}
 
-var etcdbackupsKind = schema.GroupVersionKind{Group: "etcd.database.coreos.com", Version: "v1beta3", Kind: "EtcdBackup"}
+var etcdbackupsKind = schema.GroupVersionKind{Group: "etcd.database.canonical.com", Version: "v1beta3", Kind: "EtcdBackup"}
 
 // Get takes name of the etcdBackup, and returns the corresponding etcdBackup object, and an error if there is any.
 func (c *FakeEtcdBackups) Get(name string, options v1.GetOptions) (result *v1beta3.EtcdBackup, err error) {

@@ -15,5 +15,5 @@ limitations under the License.
 */
 
 // +k8s:deepcopy-gen=package
-// +groupName=etcd.database.coreos.com
+// +groupName=etcd.database.canonical.com
 package v1beta3

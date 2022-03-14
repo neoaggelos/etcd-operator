@@ -7,7 +7,7 @@ metadata:
   name: etcd-operator-role
 rules:
 - apiGroups:
-  - etcd.database.coreos.com
+  - etcd.database.canonical.com
   resources:
   - etcdclusters
   - etcdbackups

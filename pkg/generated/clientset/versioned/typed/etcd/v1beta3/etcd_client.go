@@ -32,7 +32,7 @@ type EtcdV1beta3Interface interface {
 	EtcdRestoresGetter
 }
 
-// EtcdV1beta3Client is used to interact with features provided by the etcd.database.coreos.com group.
+// EtcdV1beta3Client is used to interact with features provided by the etcd.database.canonical.com group.
 type EtcdV1beta3Client struct {
 	restClient rest.Interface
 }

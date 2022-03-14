@@ -24,7 +24,7 @@ apiVersion: v1
 
 3. Create an `EtcdBackup` CR file `etcdbackup.yaml` which uses secret `my-oss-credentials` from the previous step.
 ```yaml
-apiVersion: etcd.database.coreos.com/v1beta3
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdBackup
 metadata:
   name: etcd-cluster-with-oss-backup
@@ -47,7 +47,7 @@ kubectl apply -f etcdbackup.yaml
 5. Check the `status` section of the `EtcdBackup` CR.
 ```console
 $ kubectl get EtcdBackup etcd-cluster-with-oss-backup -o yaml
-apiVersion: etcd.database.coreos.com/v1beta3
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdBackup
 ...
 spec:
@@ -83,7 +83,7 @@ kubectl delete pod -l app=etcd,etcd_cluster=example-etcd-cluster --force --grace
 
 1. Create an EtcdRestore CR.
 ```yaml
-apiVersion: "etcd.database.coreos.com/v1beta3"
+apiVersion: "etcd.database.canonical.com/v1beta3"
 kind: "EtcdRestore"
 metadata:
   # The restore CR name must be the same as spec.etcdCluster.name
@@ -103,7 +103,7 @@ spec:
 2. Check the `status` section of the `EtcdRestore` CR.
 ```sh
 $ kubectl get etcdrestore example-etcd-cluster -o yaml
-apiVersion: etcd.database.coreos.com/v1beta3
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdRestore
 ...
 spec:

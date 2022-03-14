@@ -23,7 +23,7 @@ import (
 const (
 	EtcdClusterResourceKind   = "EtcdCluster"
 	EtcdClusterResourcePlural = "etcdclusters"
-	groupName                 = "etcd.database.coreos.com"
+	groupName                 = "etcd.database.canonical.com"
 
 	EtcdBackupResourceKind   = "EtcdBackup"
 	EtcdBackupResourcePlural = "etcdbackups"

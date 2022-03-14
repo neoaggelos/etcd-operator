@@ -7,7 +7,7 @@ To create a cluster with backups to GCS, set `backup.storageType` to `"GCS"`, su
 An example cluster manifest would look like:
 
 ```bash
-apiVersion: etcd.database.coreos.com/v1beta3
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdCluster
 metadata:
   name: etcd-cluster-with-gcs-backup
