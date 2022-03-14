@@ -20,9 +20,7 @@ spec:
       serviceAccountName: etcd-operator-{{ .Release.Name }}-sa
       containers:
         - name: operator
-          # TODO(neoaggelos): https://github.com/neoaggelos/etcd-operator/pull/1
-          # Update to a stable build once PR is merged upstream
-          image: neoaggelos/etcd-operator:0.10.0-5
+          image: {{ .Values.operator.image }}
           command:
             - /operator
           env:
