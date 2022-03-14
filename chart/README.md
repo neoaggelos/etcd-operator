@@ -20,7 +20,7 @@ cd chart
 
 # if making a backwards-incompatible change, bump minor
 cp v0.0.1 v0.1.0
-rm latest && ln -s latest v0.1.0
+rm latest && ln -s v0.1.0 latest
 
 # ... edit templates, configuration, values, etc under etcd-operator ...
 
