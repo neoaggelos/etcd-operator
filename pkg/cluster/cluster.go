@@ -426,8 +426,10 @@ func (c *Cluster) removePod(name string) error {
 
 func (c *Cluster) pollNodes() (nodes []v1.Node, err error) {
 	labelSelector := ""
-	if nodeSelector := c.cluster.Spec.Pod.NodeSelector; len(nodeSelector) > 0 {
-		labelSelector = metav1.FormatLabelSelector(&metav1.LabelSelector{MatchLabels: nodeSelector})
+	if podPolicy := c.cluster.Spec.Pod; podPolicy != nil {
+		if nodeSelector := podPolicy.NodeSelector; len(nodeSelector) > 0 {
+			labelSelector = metav1.FormatLabelSelector(&metav1.LabelSelector{MatchLabels: nodeSelector})
+		}
 	}
 
 	nodeList, err := c.config.KubeCli.CoreV1().Nodes().List(metav1.ListOptions{
