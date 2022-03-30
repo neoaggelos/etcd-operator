@@ -3,17 +3,7 @@ entries:
   etcd-operator:
   - apiVersion: v2
     appVersion: 0.10.0+git
-    created: "2022-03-31T00:43:53.09996784+03:00"
-    description: A Helm chart to deploy etcd-operator
-    digest: 34cb10c9e5913243b2fe7b9c969bbbd72f687f11b7e423f8c11c66d9f0acb879
-    name: etcd-operator
-    type: application
-    urls:
-    - latest/etcd-operator-0.1.0.tgz
-    version: 0.1.0
-  - apiVersion: v2
-    appVersion: 0.10.0+git
-    created: "2022-03-31T00:43:53.100629564+03:00"
+    created: "2022-03-31T01:01:54.012480215+03:00"
     description: A Helm chart to deploy etcd-operator
     digest: 34cb10c9e5913243b2fe7b9c969bbbd72f687f11b7e423f8c11c66d9f0acb879
     name: etcd-operator
@@ -23,7 +13,7 @@ entries:
     version: 0.1.0
   - apiVersion: v2
     appVersion: 0.10.0+git
-    created: "2022-03-31T00:43:53.100303757+03:00"
+    created: "2022-03-31T01:01:54.011954903+03:00"
     description: A Helm chart to deploy etcd-operator
     digest: e27851b4d60e2b404deb7e160890f3eb77f4e7e868086c782cfa84469af257a2
     name: etcd-operator
@@ -31,4 +21,4 @@ entries:
     urls:
     - v0.0.1/etcd-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2022-03-31T00:43:53.09928623+03:00"
+generated: "2022-03-31T01:01:54.010904419+03:00"
