@@ -32,4 +32,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+          securityContext:
+            {{- toYaml .Values.operator.securityContext | nindent 12 }}
 {{ end }}
