@@ -237,10 +237,10 @@ func newEtcdServiceManifest(svcName, clusterName, clusterIP string, ports []v1.S
 			},
 		},
 		Spec: v1.ServiceSpec{
-			Ports:     ports,
-			Selector:  labels,
-			ClusterIP: clusterIP,
-			// PublishNotReadyAddresses: publishNotReadyAddresses, // TODO(ckoehn): Activate once TolerateUnreadyEndpointsAnnotation is deprecated.
+			Ports:                    ports,
+			Selector:                 labels,
+			ClusterIP:                clusterIP,
+			PublishNotReadyAddresses: publishNotReadyAddresses,
 		},
 	}
 	return svc

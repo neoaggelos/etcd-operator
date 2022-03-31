@@ -27,6 +27,8 @@
 
 - Don't expose unready nodes via client service. [#2063](https://github.com/coreos/etcd-operator/pull/2063)
 - Azure blob storage: use correct list prefix [#2071](https://github.com/coreos/etcd-operator/pull/2071)
+- Set `PublishNotReadyAddresses` on the peer service of etcd clusters to true.
+  - This is needed for newer CoreDNS versions (tested with 1.8.7 and 1.9.0).
 
 ### Deprecated
 
