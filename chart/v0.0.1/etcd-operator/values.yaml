@@ -1,6 +1,6 @@
 operator:
   enabled: true
-  image: cdkbot/etcd-operator:0.10.0-microk8s-1
+  image: cdkbot/etcd-operator:0.10.0-microk8s-2
 rbac:
   enabled: true
 
