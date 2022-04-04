@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-helm repo add etcd-operator https://raw.githubusercontent.com/canonical/etcd-operator/master/charts
+helm repo add etcd-operator https://raw.githubusercontent.com/canonical/etcd-operator/master/chart
 helm install etcd-operator etcd-operator/etcd-operator --namespace etcd --version 0.0.1
 ```
 
