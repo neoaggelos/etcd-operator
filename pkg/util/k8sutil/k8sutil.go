@@ -354,12 +354,13 @@ func newEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state,
 	}
 
 	DNSTimeout := defaultDNSTimeout
+	restartPolicy := v1.RestartPolicyNever
 	if cs.Pod != nil {
 		DNSTimeout = cs.Pod.DNSTimeoutInSecond
-	}
-	restartPolicy := v1.RestartPolicyNever
-	if cs.Pod.RestartPolicy != "" {
-		restartPolicy = cs.Pod.RestartPolicy
+
+		if cs.Pod.RestartPolicy != "" {
+			restartPolicy = cs.Pod.RestartPolicy
+		}
 	}
 	pod := &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
