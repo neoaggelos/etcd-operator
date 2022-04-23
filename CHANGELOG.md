@@ -29,6 +29,8 @@
 - Azure blob storage: use correct list prefix [#2071](https://github.com/coreos/etcd-operator/pull/2071)
 - Set `PublishNotReadyAddresses` on the peer service of etcd clusters to true.
   - This is needed for newer CoreDNS versions (tested with 1.8.7 and 1.9.0).
+- Fix etcd clusters using TLS.
+  - Added a `/tmp` emptyDir volume mount to the etcd-operator deployment. See [here for details](https://github.com/neoaggelos/etcd-operator/pull/1#issuecomment-1101515276).
 
 ### Deprecated
 

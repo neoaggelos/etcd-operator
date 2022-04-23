@@ -25,3 +25,9 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

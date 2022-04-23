@@ -34,4 +34,10 @@ spec:
                   fieldPath: metadata.name
           securityContext:
             {{- toYaml .Values.operator.securityContext | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
 {{ end }}
