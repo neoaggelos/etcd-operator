@@ -6,7 +6,7 @@ metadata:
 spec:
   size: 3
   limitSizeToMaxReadyNodes: true
-  version: "3.5.2"
+  version: "3.5.4"
   pod:
     # hostPathVolume: /var/snap/microk8s/common/default-storage/mayastor-etcd/$NAME
     affinity:
