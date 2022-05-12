@@ -8,6 +8,7 @@
 - Added `spec.Pod.RestartPolicy` to add configurable RestartPolicy for etcd pods. This is particularly useful for single-node etcd clusters that fail if the pod stops (e.g. during a node reboot).
 - Added a Helm Chart to deploy the operator and etcd clusters.
 - Added `Dockerfile` to build etcd-operator.
+- Added `makefile` to build multi-arch etcd-operator images (for amd64 and arm64 architectures), see BUILD.md.
 
 ### Changed
 
