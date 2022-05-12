@@ -20,6 +20,7 @@
 - Update Prometheus.
 - Update etcd client library to 3.5.2.
 - Migrate to Go modules for building the operator.
+- Use etcd 3.5.4 by default.
 
 ### Removed
 
