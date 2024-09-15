@@ -85,7 +85,7 @@ Modify the file and change `size` from 3 to 5.
 
 ```
 $ cat example/example-etcd-cluster.yaml
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.canonical.com/v1beta3"
 kind: "EtcdCluster"
 metadata:
   name: "example-etcd-cluster"
@@ -113,7 +113,7 @@ Similarly we can decrease the size of the cluster from 5 back to 3 by changing t
 
 ```
 $ cat example/example-etcd-cluster.yaml
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.canonical.com/v1beta3"
 kind: "EtcdCluster"
 metadata:
   name: "example-etcd-cluster"
@@ -206,7 +206,7 @@ Create and have the following yaml file ready:
 
 ```
 $ cat upgrade-example.yaml
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.canonical.com/v1beta3"
 kind: "EtcdCluster"
 metadata:
   name: "example-etcd-cluster"
@@ -238,7 +238,7 @@ Now modify the file `upgrade-example` and change the `version` from 3.1.10 to 3.
 
 ```
 $ cat upgrade-example
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.canonical.com/v1beta3"
 kind: "EtcdCluster"
 metadata:
   name: "example-etcd-cluster"

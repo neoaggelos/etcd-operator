@@ -19,10 +19,10 @@ import (
 	"os"
 	"time"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/util/constants"
 
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

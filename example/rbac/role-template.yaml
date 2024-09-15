@@ -5,7 +5,7 @@ metadata:
   namespace: <NAMESPACE>
 rules:
 - apiGroups:
-  - etcd.database.coreos.com
+  - etcd.database.canonical.com
   resources:
   - etcdclusters
   - etcdbackups
@@ -31,7 +31,7 @@ rules:
 # The following permissions can be removed if not using S3 backup and TLS
 - apiGroups:
   - ""
-  resources: 
+  resources:
   - secrets
   verbs:
   - get

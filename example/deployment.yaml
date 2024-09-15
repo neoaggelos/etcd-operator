@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: v1.apps
 kind: Deployment
 metadata:
   name: etcd-operator
@@ -11,11 +11,11 @@ spec:
     spec:
       containers:
       - name: etcd-operator
-        image: quay.io/coreos/etcd-operator:v0.9.4
+        image: neoaggelos/etcd-operator:0.10.0-5
         command:
         - etcd-operator
         # Uncomment to act for resources in all namespaces. More information in doc/user/clusterwide.md
-        #- -cluster-wide
+        # - -cluster-wide
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:
@@ -25,3 +25,9 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

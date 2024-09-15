@@ -19,14 +19,14 @@ limitations under the License.
 package etcd
 
 import (
-	v1beta2 "github.com/coreos/etcd-operator/pkg/generated/informers/externalversions/etcd/v1beta2"
+	v1beta3 "github.com/coreos/etcd-operator/pkg/generated/informers/externalversions/etcd/v1beta3"
 	internalinterfaces "github.com/coreos/etcd-operator/pkg/generated/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to each of this group's versions.
 type Interface interface {
-	// V1beta2 provides access to shared informers for resources in V1beta2.
-	V1beta2() v1beta2.Interface
+	// V1beta3 provides access to shared informers for resources in V1beta3.
+	V1beta3() v1beta3.Interface
 }
 
 type group struct {
@@ -40,7 +40,7 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &group{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// V1beta2 returns a new v1beta2.Interface.
-func (g *group) V1beta2() v1beta2.Interface {
-	return v1beta2.New(g.factory, g.namespace, g.tweakListOptions)
+// V1beta3 returns a new v1beta3.Interface.
+func (g *group) V1beta3() v1beta3.Interface {
+	return v1beta3.New(g.factory, g.namespace, g.tweakListOptions)
 }

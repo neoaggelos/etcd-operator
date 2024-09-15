@@ -26,7 +26,7 @@ import (
 	"testing"
 	"time"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/backup/writer"
 	"github.com/coreos/etcd-operator/pkg/util/awsutil/s3factory"
 	"github.com/coreos/etcd-operator/pkg/util/etcdutil"
@@ -34,8 +34,7 @@ import (
 	"github.com/coreos/etcd-operator/pkg/util/retryutil"
 	"github.com/coreos/etcd-operator/test/e2e/e2eutil"
 	"github.com/coreos/etcd-operator/test/e2e/framework"
-
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -100,7 +99,7 @@ func verifyAWSEnvVars() error {
 }
 
 func getEndpoints(kubeClient kubernetes.Interface, secureClient bool, namespace, clusterName string) ([]string, error) {
-	podList, err := kubeClient.Core().Pods(namespace).List(k8sutil.ClusterListOpt(clusterName))
+	podList, err := kubeClient.CoreV1().Pods(namespace).List(k8sutil.ClusterListOpt(clusterName))
 	if err != nil {
 		return nil, err
 	}
@@ -139,12 +138,12 @@ func testEtcdBackupOperatorForS3Backup(t *testing.T, clusterName, operatorClient
 		t.Fatalf("failed to get endpoints: %v", err)
 	}
 	backupCR := e2eutil.NewS3Backup(endpoints, clusterName, s3Path, os.Getenv("TEST_AWS_SECRET"), operatorClientTLSSecret)
-	eb, err := f.CRClient.EtcdV1beta2().EtcdBackups(f.Namespace).Create(backupCR)
+	eb, err := f.CRClient.EtcdV1beta3().EtcdBackups(f.Namespace).Create(backupCR)
 	if err != nil {
 		t.Fatalf("failed to create etcd backup cr: %v", err)
 	}
 	defer func() {
-		if err := f.CRClient.EtcdV1beta2().EtcdBackups(f.Namespace).Delete(eb.Name, nil); err != nil {
+		if err := f.CRClient.EtcdV1beta3().EtcdBackups(f.Namespace).Delete(eb.Name, nil); err != nil {
 			t.Fatalf("failed to delete etcd backup cr: %v", err)
 		}
 	}()
@@ -153,7 +152,7 @@ func testEtcdBackupOperatorForS3Backup(t *testing.T, clusterName, operatorClient
 	// 4 seconds timeout via retry is enough; duration longer than that may indicate internal issues and
 	// is worthy of investigation.
 	err = retryutil.Retry(time.Second, 4, func() (bool, error) {
-		reb, err := f.CRClient.EtcdV1beta2().EtcdBackups(f.Namespace).Get(eb.Name, metav1.GetOptions{})
+		reb, err := f.CRClient.EtcdV1beta3().EtcdBackups(f.Namespace).Get(eb.Name, metav1.GetOptions{})
 		if err != nil {
 			return false, fmt.Errorf("failed to retrieve backup CR: %v", err)
 		}
@@ -215,12 +214,12 @@ func testEtcdBackupOperatorForPeriodicS3Backup(t *testing.T, clusterName, operat
 	}
 
 	// create etcdbackup resource
-	eb, err := f.CRClient.EtcdV1beta2().EtcdBackups(f.Namespace).Create(backupCR)
+	eb, err := f.CRClient.EtcdV1beta3().EtcdBackups(f.Namespace).Create(backupCR)
 	if err != nil {
 		t.Fatalf("failed to create etcd back cr: %v", err)
 	}
 	defer func() {
-		if err := f.CRClient.EtcdV1beta2().EtcdBackups(f.Namespace).Delete(eb.Name, nil); err != nil {
+		if err := f.CRClient.EtcdV1beta3().EtcdBackups(f.Namespace).Delete(eb.Name, nil); err != nil {
 			t.Fatalf("failed to delete etcd backup cr: %v", err)
 		}
 		// cleanup backup files
@@ -271,18 +270,18 @@ func testEtcdRestoreOperatorForS3Source(t *testing.T, clusterName, s3Path string
 
 	restoreSource := api.RestoreSource{S3: e2eutil.NewS3RestoreSource(s3Path, os.Getenv("TEST_AWS_SECRET"))}
 	er := e2eutil.NewEtcdRestore(clusterName, 3, restoreSource, api.BackupStorageTypeS3)
-	er, err := f.CRClient.EtcdV1beta2().EtcdRestores(f.Namespace).Create(er)
+	er, err := f.CRClient.EtcdV1beta3().EtcdRestores(f.Namespace).Create(er)
 	if err != nil {
 		t.Fatalf("failed to create etcd restore cr: %v", err)
 	}
 	defer func() {
-		if err := f.CRClient.EtcdV1beta2().EtcdRestores(f.Namespace).Delete(er.Name, nil); err != nil {
+		if err := f.CRClient.EtcdV1beta3().EtcdRestores(f.Namespace).Delete(er.Name, nil); err != nil {
 			t.Fatalf("failed to delete etcd restore cr: %v", err)
 		}
 	}()
 
 	err = retryutil.Retry(10*time.Second, 1, func() (bool, error) {
-		er, err := f.CRClient.EtcdV1beta2().EtcdRestores(f.Namespace).Get(er.Name, metav1.GetOptions{})
+		er, err := f.CRClient.EtcdV1beta3().EtcdRestores(f.Namespace).Get(er.Name, metav1.GetOptions{})
 		if err != nil {
 			return false, fmt.Errorf("failed to retrieve restore CR: %v", err)
 		}

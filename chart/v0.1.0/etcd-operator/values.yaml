@@ -1,0 +1,24 @@
+operator:
+  enabled: true
+  image: cdkbot/etcd-operator:0.10.0-microk8s-2
+  securityContext: {}
+rbac:
+  enabled: true
+
+clusters:
+  - name: etcd
+    spec:
+      size: 3
+      limitSizeToMaxReadyNodes: true
+      version: "3.5.4"
+      pod:
+        restartPolicy: Always
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: etcd_cluster
+                      operator: In
+                      values: [etcd]
+                topologyKey: kubernetes.io/hostname

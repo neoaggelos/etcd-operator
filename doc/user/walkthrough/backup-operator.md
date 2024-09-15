@@ -9,7 +9,7 @@ etcd backup operator backs up the data of a etcd cluster running on [Kubernetes]
 Try out etcd backup operator by running it on Kubernetes and then create a `EtcdBackup` Custom Resource which contains the targeting etcd cluster and S3 backup config; the etcd backup operator automatically picks up the `EtcdBackup` Custom Resource, retrieves etcd snapshot, and then saves it to S3.
 >Note: The demo uses the `default` namespace.
 
-Prerequisites: 
+Prerequisites:
 * Setup RBAC and deploy an etcd operator. See [Install Guide][install_guide]
 * A running etcd cluster named `example-etcd-cluster`. See [instructions][etcd_cluster_deploy] to deploy it.
 
@@ -30,7 +30,7 @@ Verify that the etcd-backup-operator creates EtcdBackup CRD:
 ```sh
 $ kubectl get crd
 NAME                                    KIND
-etcdbackups.etcd.database.coreos.com    CustomResourceDefinition.v1beta1.apiextensions.k8s.io
+etcdbackups.etcd.database.canonical.com    CustomResourceDefinition.v1beta1.apiextensions.k8s.io
 ```
 
 ### Setup AWS Secret
@@ -76,7 +76,7 @@ Check the `status` section of the `EtcdBackup` CR:
 
 ```
 $ kubectl get EtcdBackup example-etcd-cluster-backup -o yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdBackup
 ...
 status:

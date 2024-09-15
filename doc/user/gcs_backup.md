@@ -29,7 +29,7 @@ kubectl apply -f example/etcd-backup-operator/deployment.yaml
 Create an `EtcdBackup` CR file `etcdbackup.yaml` which uses secret `gcp-credentials` from the previous section:
 
 ```yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdBackup
 metadata:
   name: example-etcd-cluster-backup
@@ -52,7 +52,7 @@ Check the `status` section of the `EtcdBackup` CR:
 
 ```sh
 $ kubectl get EtcdBackup example-etcd-cluster-backup -o yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdBackup
 ...
 spec:
@@ -95,7 +95,7 @@ kubectl delete pod -l app=etcd,etcd_cluster=example-etcd-cluster --force --grace
 Create EtcdRestore CR:
 
 ```yaml
-apiVersion: "etcd.database.coreos.com/v1beta2"
+apiVersion: "etcd.database.canonical.com/v1beta3"
 kind: "EtcdRestore"
 metadata:
   # The restore CR name must be the same as spec.etcdCluster.name
@@ -115,7 +115,7 @@ Check the `status` section of the `EtcdRestore` CR:
 
 ```sh
 $ kubectl get etcdrestore example-etcd-cluster -o yaml
-apiVersion: etcd.database.coreos.com/v1beta2
+apiVersion: etcd.database.canonical.com/v1beta3
 kind: EtcdRestore
 ...
 spec:

@@ -1,0 +1,8 @@
+apiVersion: v2
+name: etcd-operator
+description: A Helm chart to deploy etcd-operator
+
+type: application
+version: 0.0.1
+
+appVersion: "0.10.0+git"

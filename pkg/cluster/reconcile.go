@@ -19,14 +19,15 @@ import (
 	"errors"
 	"fmt"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/util/constants"
 	"github.com/coreos/etcd-operator/pkg/util/etcdutil"
 	"github.com/coreos/etcd-operator/pkg/util/k8sutil"
+	"github.com/sirupsen/logrus"
 
-	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/etcdserver/api/v3rpc/rpctypes"
-	"k8s.io/api/core/v1"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	v1 "k8s.io/api/core/v1"
 )
 
 // ErrLostQuorum indicates that the etcd cluster lost its quorum.
@@ -35,7 +36,7 @@ var ErrLostQuorum = errors.New("lost quorum")
 // reconcile reconciles cluster current state to desired state specified by spec.
 // - it tries to reconcile the cluster to desired size.
 // - if the cluster needs for upgrade, it tries to upgrade old member one by one.
-func (c *Cluster) reconcile(pods []*v1.Pod) error {
+func (c *Cluster) reconcile(pods []*v1.Pod, readyNodes []v1.Node) error {
 	c.logger.Infoln("Start reconciling")
 	defer c.logger.Infoln("Finish reconciling")
 
@@ -46,7 +47,7 @@ func (c *Cluster) reconcile(pods []*v1.Pod) error {
 	sp := c.cluster.Spec
 	running := podsToMemberSet(pods, c.isSecureClient())
 	if !running.IsEqual(c.members) || c.members.Size() != sp.Size {
-		return c.reconcileMembers(running)
+		return c.reconcileMembers(running, readyNodes)
 	}
 	c.status.ClearCondition(api.ClusterConditionScaling)
 
@@ -73,7 +74,7 @@ func (c *Cluster) reconcile(pods []*v1.Pod) error {
 // 3. If L = members, the current state matches the membership state. END.
 // 4. If len(L) < len(members)/2 + 1, return quorum lost error.
 // 5. Add one missing member. END.
-func (c *Cluster) reconcileMembers(running etcdutil.MemberSet) error {
+func (c *Cluster) reconcileMembers(running etcdutil.MemberSet, readyNodes []v1.Node) error {
 	c.logger.Infof("running members: %s", running)
 	c.logger.Infof("cluster membership: %s", c.members)
 
@@ -89,7 +90,7 @@ func (c *Cluster) reconcileMembers(running etcdutil.MemberSet) error {
 	L := running.Diff(unknownMembers)
 
 	if L.Size() == c.members.Size() {
-		return c.resize()
+		return c.resize(len(readyNodes))
 	}
 
 	if L.Size() < c.members.Size()/2+1 {
@@ -101,12 +102,19 @@ func (c *Cluster) reconcileMembers(running etcdutil.MemberSet) error {
 	return c.removeDeadMember(c.members.Diff(L).PickOne())
 }
 
-func (c *Cluster) resize() error {
+func (c *Cluster) resize(readyNodes int) error {
 	if c.members.Size() == c.cluster.Spec.Size {
 		return nil
 	}
 
 	if c.members.Size() < c.cluster.Spec.Size {
+		if c.cluster.Spec.LimitSizeToMaxReadyNodes && c.members.Size() >= readyNodes {
+			c.logger.WithFields(logrus.Fields{
+				"etcd_members": c.members.Size(),
+				"ready_nodes":  readyNodes,
+			}).Info("limitSizeToMaxReadyNodes is set, not adding new etcd members")
+			return nil
+		}
 		return c.addOneMember()
 	}
 
@@ -199,7 +207,7 @@ func (c *Cluster) removeMember(toRemove *etcdutil.Member) (err error) {
 }
 
 func (c *Cluster) removePVC(pvcName string) error {
-	err := c.config.KubeCli.Core().PersistentVolumeClaims(c.cluster.Namespace).Delete(pvcName, nil)
+	err := c.config.KubeCli.CoreV1().PersistentVolumeClaims(c.cluster.Namespace).Delete(pvcName, nil)
 	if err != nil && !k8sutil.IsKubernetesResourceNotFoundError(err) {
 		return fmt.Errorf("remove pvc (%s) failed: %v", pvcName, err)
 	}

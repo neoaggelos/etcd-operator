@@ -23,7 +23,7 @@ import (
 	"strings"
 	"time"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/generated/clientset/versioned"
 	"github.com/coreos/etcd-operator/pkg/util/etcdutil"
 	"github.com/coreos/etcd-operator/pkg/util/k8sutil"
@@ -31,7 +31,7 @@ import (
 
 	"github.com/pborman/uuid"
 	"github.com/sirupsen/logrus"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -98,7 +98,7 @@ func New(config Config, cl *api.EtcdCluster) *Cluster {
 		eventCh:   make(chan *clusterEvent, 100),
 		stopCh:    make(chan struct{}),
 		status:    *(cl.Status.DeepCopy()),
-		eventsCli: config.KubeCli.Core().Events(cl.Namespace),
+		eventsCli: config.KubeCli.CoreV1().Events(cl.Namespace),
 	}
 
 	go func() {
@@ -238,6 +238,12 @@ func (c *Cluster) run() {
 				reconcileFailed.WithLabelValues("failed to poll pods").Inc()
 				continue
 			}
+			nodes, err := c.pollNodes()
+			if err != nil {
+				c.logger.Errorf("fail to poll nodes: %v", err)
+				reconcileFailed.WithLabelValues("failed to poll nodes").Inc()
+				continue
+			}
 
 			if len(pending) > 0 {
 				// Pod startup might take long, e.g. pulling image. It would deterministically become running or succeeded/failed later.
@@ -259,7 +265,7 @@ func (c *Cluster) run() {
 					break
 				}
 			}
-			rerr = c.reconcile(running)
+			rerr = c.reconcile(running, nodes)
 			if rerr != nil {
 				c.logger.Errorf("failed to reconcile: %v", rerr)
 				break
@@ -369,6 +375,13 @@ func (c *Cluster) isPodPVEnabled() bool {
 	return false
 }
 
+func (c *Cluster) isPodHostPathEnabled() bool {
+	if podPolicy := c.cluster.Spec.Pod; podPolicy != nil {
+		return podPolicy.HostPathVolume != ""
+	}
+	return false
+}
+
 func (c *Cluster) createPod(members etcdutil.MemberSet, m *etcdutil.Member, state string) error {
 	pod := k8sutil.NewEtcdPod(m, members.PeerURLPairs(), c.cluster.Name, state, uuid.New(), c.cluster.Spec, c.cluster.AsOwner())
 	if c.isPodPVEnabled() {
@@ -377,9 +390,23 @@ func (c *Cluster) createPod(members etcdutil.MemberSet, m *etcdutil.Member, stat
 		if err != nil {
 			return fmt.Errorf("failed to create PVC for member (%s): %v", m.Name, err)
 		}
-		k8sutil.AddEtcdVolumeToPod(pod, pvc)
+		k8sutil.AddEtcdVolumeToPod(pod, v1.VolumeSource{
+			PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{
+				ClaimName: pvc.Name,
+			},
+		})
+	} else if c.isPodHostPathEnabled() {
+		path := strings.ReplaceAll(c.cluster.Spec.Pod.HostPathVolume, "$NAME", pod.Name)
+		k8sutil.AddEtcdVolumeToPod(pod, v1.VolumeSource{
+			HostPath: &v1.HostPathVolumeSource{
+				Path: path,
+				Type: func(s string) *v1.HostPathType { t := v1.HostPathType(s); return &t }("DirectoryOrCreate"),
+			},
+		})
 	} else {
-		k8sutil.AddEtcdVolumeToPod(pod, nil)
+		k8sutil.AddEtcdVolumeToPod(pod, v1.VolumeSource{
+			EmptyDir: &v1.EmptyDirVolumeSource{},
+		})
 	}
 	_, err := c.config.KubeCli.CoreV1().Pods(c.cluster.Namespace).Create(pod)
 	return err
@@ -388,7 +415,7 @@ func (c *Cluster) createPod(members etcdutil.MemberSet, m *etcdutil.Member, stat
 func (c *Cluster) removePod(name string) error {
 	ns := c.cluster.Namespace
 	opts := metav1.NewDeleteOptions(podTerminationGracePeriod)
-	err := c.config.KubeCli.Core().Pods(ns).Delete(name, opts)
+	err := c.config.KubeCli.CoreV1().Pods(ns).Delete(name, opts)
 	if err != nil {
 		if !k8sutil.IsKubernetesResourceNotFoundError(err) {
 			return err
@@ -397,8 +424,33 @@ func (c *Cluster) removePod(name string) error {
 	return nil
 }
 
+func (c *Cluster) pollNodes() (nodes []v1.Node, err error) {
+	labelSelector := ""
+	if podPolicy := c.cluster.Spec.Pod; podPolicy != nil {
+		if nodeSelector := podPolicy.NodeSelector; len(nodeSelector) > 0 {
+			labelSelector = metav1.FormatLabelSelector(&metav1.LabelSelector{MatchLabels: nodeSelector})
+		}
+	}
+
+	nodeList, err := c.config.KubeCli.CoreV1().Nodes().List(metav1.ListOptions{
+		LabelSelector: labelSelector,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list available nodes: %v", err)
+	}
+	readyNodes := make([]v1.Node, 0, len(nodeList.Items))
+	for _, node := range nodeList.Items {
+		for _, condition := range node.Status.Conditions {
+			if condition.Type == v1.NodeReady && condition.Status == v1.ConditionTrue {
+				readyNodes = append(readyNodes, node)
+			}
+		}
+	}
+	return readyNodes, nil
+}
+
 func (c *Cluster) pollPods() (running, pending []*v1.Pod, err error) {
-	podList, err := c.config.KubeCli.Core().Pods(c.cluster.Namespace).List(k8sutil.ClusterListOpt(c.cluster.Name))
+	podList, err := c.config.KubeCli.CoreV1().Pods(c.cluster.Namespace).List(k8sutil.ClusterListOpt(c.cluster.Name))
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to list running pods: %v", err)
 	}
@@ -452,7 +504,7 @@ func (c *Cluster) updateCRStatus() error {
 
 	newCluster := c.cluster
 	newCluster.Status = c.status
-	newCluster, err := c.config.EtcdCRCli.EtcdV1beta2().EtcdClusters(c.cluster.Namespace).Update(c.cluster)
+	newCluster, err := c.config.EtcdCRCli.EtcdV1beta3().EtcdClusters(c.cluster.Namespace).Update(c.cluster)
 	if err != nil {
 		return fmt.Errorf("failed to update CR status: %v", err)
 	}
@@ -478,7 +530,7 @@ func (c *Cluster) reportFailedStatus() {
 			return false, nil
 		}
 
-		cl, err := c.config.EtcdCRCli.EtcdV1beta2().EtcdClusters(c.cluster.Namespace).
+		cl, err := c.config.EtcdCRCli.EtcdV1beta3().EtcdClusters(c.cluster.Namespace).
 			Get(c.cluster.Name, metav1.GetOptions{})
 		if err != nil {
 			// Update (PUT) will return conflict even if object is deleted since we have UID set in object.

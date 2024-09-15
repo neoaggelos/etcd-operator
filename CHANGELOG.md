@@ -3,8 +3,25 @@
 ### Added
 
 - Added `spec.Pod.ClusterDomain` to explicitly set the cluster domain used for the etcd member URLs. [#2082](https://github.com/coreos/etcd-operator/pull/2082)
+- Added `spec.Pod.HostPathVolume` to use hostpath volumes for etcd data.
+- Added `spec.LimitSizeToMaxReadyNodes` to prevent scaling up clusters when there is shortage of ready nodes.
+- Added `spec.Pod.RestartPolicy` to add configurable RestartPolicy for etcd pods. This is particularly useful for single-node etcd clusters that fail if the pod stops (e.g. during a node reboot).
+- Added a Helm Chart to deploy the operator and etcd clusters.
+- Added `Dockerfile` to build etcd-operator.
+- Added `makefile` to build multi-arch etcd-operator images (for amd64 and arm64 architectures), see BUILD.md.
 
 ### Changed
+
+- Changes in the cluster object's type metadata:
+  - The `apiVersion` field has been changed from `etcd.database.coreos.com/v1beta2` to `etcd.database.canonical.com/v1beta3`
+- The annotation `etcd.database.coreos.com/scope: clusterwide` in `EtcdCluster` has been renamed to `etcd.database.canonical.com/scope: clusterwide`
+- Migrate to `apiextensions.k8s.io/v1` for the `EtcdCluster` CRD.
+- The etcd operator will no longer create CustomResourceDefinitions by default, they have been moved to `example/crd.yaml`.
+- Update Kubernetes to 0.17.1.
+- Update Prometheus.
+- Update etcd client library to 3.5.2.
+- Migrate to Go modules for building the operator.
+- Use etcd 3.5.4 by default.
 
 ### Removed
 
@@ -12,6 +29,10 @@
 
 - Don't expose unready nodes via client service. [#2063](https://github.com/coreos/etcd-operator/pull/2063)
 - Azure blob storage: use correct list prefix [#2071](https://github.com/coreos/etcd-operator/pull/2071)
+- Set `PublishNotReadyAddresses` on the peer service of etcd clusters to true.
+  - This is needed for newer CoreDNS versions (tested with 1.8.7 and 1.9.0).
+- Fix etcd clusters using TLS.
+  - Added a `/tmp` emptyDir volume mount to the etcd-operator deployment. See [here for details](https://github.com/neoaggelos/etcd-operator/pull/1#issuecomment-1101515276).
 
 ### Deprecated
 

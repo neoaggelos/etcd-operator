@@ -4,7 +4,7 @@ metadata:
   name: backup-config
 data:
   backup_cr.yaml: |
-    apiVersion: "etcd.database.coreos.com/v1beta2"
+    apiVersion: "etcd.database.canonical.com/v1beta3"
     kind: "EtcdBackup"
     metadata:
       generateName: example-etcd-backup-

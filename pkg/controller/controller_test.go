@@ -18,7 +18,7 @@ import (
 	"strings"
 	"testing"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/cluster"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -81,7 +81,7 @@ func TestHandleClusterEventClusterwide(t *testing.T) {
 			Name:      "test",
 			Namespace: "a",
 			Annotations: map[string]string{
-				"etcd.database.coreos.com/scope": "clusterwide",
+				"etcd.database.canonical.com/scope": "clusterwide",
 			},
 		},
 	}
@@ -147,7 +147,7 @@ func TestHandleClusterEventNamespacedIgnored(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "test",
 			Annotations: map[string]string{
-				"etcd.database.coreos.com/scope": "clusterwide",
+				"etcd.database.canonical.com/scope": "clusterwide",
 			},
 		},
 	}

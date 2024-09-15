@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"time"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/util/k8sutil"
 	"github.com/coreos/etcd-operator/pkg/util/probe"
 
@@ -62,7 +62,7 @@ func (c *Controller) run() {
 	}
 
 	source := cache.NewListWatchFromClient(
-		c.Config.EtcdCRCli.EtcdV1beta2().RESTClient(),
+		c.Config.EtcdCRCli.EtcdV1beta3().RESTClient(),
 		api.EtcdClusterResourcePlural,
 		ns,
 		fields.Everything())

@@ -24,13 +24,13 @@ import (
 	"strings"
 	"time"
 
-	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	api "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	"github.com/coreos/etcd-operator/pkg/util/etcdutil"
 	"github.com/coreos/etcd-operator/pkg/util/retryutil"
 	"github.com/pborman/uuid"
 
 	appsv1beta1 "k8s.io/api/apps/v1beta1"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -65,7 +65,7 @@ const (
 	defaultBusyboxImage = "busybox:1.28.0-glibc"
 
 	// AnnotationScope annotation name for defining instance scope. Used for specifying cluster wide clusters.
-	AnnotationScope = "etcd.database.coreos.com/scope"
+	AnnotationScope = "etcd.database.canonical.com/scope"
 	//AnnotationClusterWide annotation value for cluster wide clusters.
 	AnnotationClusterWide = "clusterwide"
 
@@ -237,24 +237,19 @@ func newEtcdServiceManifest(svcName, clusterName, clusterIP string, ports []v1.S
 			},
 		},
 		Spec: v1.ServiceSpec{
-			Ports:     ports,
-			Selector:  labels,
-			ClusterIP: clusterIP,
-			// PublishNotReadyAddresses: publishNotReadyAddresses, // TODO(ckoehn): Activate once TolerateUnreadyEndpointsAnnotation is deprecated.
+			Ports:                    ports,
+			Selector:                 labels,
+			ClusterIP:                clusterIP,
+			PublishNotReadyAddresses: publishNotReadyAddresses,
 		},
 	}
 	return svc
 }
 
-// AddEtcdVolumeToPod abstract the process of appending volume spec to pod spec
-func AddEtcdVolumeToPod(pod *v1.Pod, pvc *v1.PersistentVolumeClaim) {
-	vol := v1.Volume{Name: etcdVolumeName}
-	if pvc != nil {
-		vol.VolumeSource = v1.VolumeSource{
-			PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{ClaimName: pvc.Name},
-		}
-	} else {
-		vol.VolumeSource = v1.VolumeSource{EmptyDir: &v1.EmptyDirVolumeSource{}}
+func AddEtcdVolumeToPod(pod *v1.Pod, volumeSource v1.VolumeSource) {
+	vol := v1.Volume{
+		Name:         etcdVolumeName,
+		VolumeSource: volumeSource,
 	}
 	pod.Spec.Volumes = append(pod.Spec.Volumes, vol)
 }
@@ -274,7 +269,9 @@ func NewSeedMemberPod(clusterName string, ms etcdutil.MemberSet, m *etcdutil.Mem
 	token := uuid.New()
 	pod := newEtcdPod(m, ms.PeerURLPairs(), clusterName, "new", token, cs)
 	// TODO: PVC datadir support for restore process
-	AddEtcdVolumeToPod(pod, nil)
+	AddEtcdVolumeToPod(pod, v1.VolumeSource{
+		EmptyDir: &v1.EmptyDirVolumeSource{},
+	})
 	if backupURL != nil {
 		addRecoveryToPod(pod, token, m, cs, backupURL)
 	}
@@ -357,8 +354,13 @@ func newEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state,
 	}
 
 	DNSTimeout := defaultDNSTimeout
+	restartPolicy := v1.RestartPolicyNever
 	if cs.Pod != nil {
 		DNSTimeout = cs.Pod.DNSTimeoutInSecond
+
+		if cs.Pod.RestartPolicy != "" {
+			restartPolicy = cs.Pod.RestartPolicy
+		}
 	}
 	pod := &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
@@ -380,7 +382,7 @@ func newEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state,
 					TIMEOUT_READY=%d
 					while ( ! nslookup %s )
 					do
-						# If TIMEOUT_READY is 0 we should never time out and exit 
+						# If TIMEOUT_READY is 0 we should never time out and exit
 						TIMEOUT_READY=$(( TIMEOUT_READY-1 ))
                         if [ $TIMEOUT_READY -eq 0 ];
 				        then
@@ -391,7 +393,7 @@ func newEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state,
 					done`, DNSTimeout, m.Addr())},
 			}},
 			Containers:    []v1.Container{container},
-			RestartPolicy: v1.RestartPolicyNever,
+			RestartPolicy: restartPolicy,
 			Volumes:       volumes,
 			// DNS A record: `[m.Name].[clusterName].Namespace.svc`
 			// For example, etcd-795649v9kq in default namesapce will have DNS name

@@ -20,7 +20,7 @@ done
 if which gosimple >/dev/null; then
   echo "Checking gosimple..."
   # Generated deepcopy code failed checking... Ignore it at the moment
-  checkRes=$(gosimple `listPkgs | grep -v apis/etcd/v1beta2`) || true
+  checkRes=$(gosimple `listPkgs | grep -v apis/etcd/v1beta3`) || true
   if [ -n "${checkRes}" ]; then
     echo -e "gosimple checking failed:\n${checkRes}"
     exit 255

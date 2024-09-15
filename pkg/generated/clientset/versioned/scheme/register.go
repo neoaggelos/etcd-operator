@@ -19,7 +19,7 @@ limitations under the License.
 package scheme
 
 import (
-	etcdv1beta2 "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta2"
+	etcdv1beta3 "github.com/coreos/etcd-operator/pkg/apis/etcd/v1beta3"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -31,7 +31,7 @@ var Scheme = runtime.NewScheme()
 var Codecs = serializer.NewCodecFactory(Scheme)
 var ParameterCodec = runtime.NewParameterCodec(Scheme)
 var localSchemeBuilder = runtime.SchemeBuilder{
-	etcdv1beta2.AddToScheme,
+	etcdv1beta3.AddToScheme,
 }
 
 // AddToScheme adds all types of this clientset into the given scheme. This allows composition
